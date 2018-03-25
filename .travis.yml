@@ -17,8 +17,16 @@ before_install:
 - yes | sdkmanager "platforms;android-27"
 
 script:
-  # Unit Test
-  - ./gradlew test jacocoTestReport
+    - ./gradlew assembleDebug
+    - find -iname \*.apk
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: gcs
+  access_key_id: 30528688265-hblsbb7p3nhupojspntt4qq4io2do9u0.apps.googleusercontent.com
+  secret_access_key:
+    secure: j5WC/PbtmwkpT4X6bAyF/90Z7Vep18O2+Edr8g7zWXpX/G5aBlltjXjxJbmzpVysza6lZid9OKd7RfWqvXi5pCPUtIGFFrr+dcc5sWop/aPeL6kJjeNFQUlCdBXiIGtC+jEQGTTw38HwVUj3v6znOz3wNpvHGgfNj/TSLvmhO1fYJrWXl5y9AZEGdbqGTNaguknHBUqEqks6YUwhmaFCz2sshhwH3Y4cVSd1BHyIpCR/BVofMYi5O0nGtdOf745YEiCkFNj6m4vI5Sg2J7GkLapupPk0mCa0xDGtkEySXKYxNUkdefqLxgNvrG3OV8AdNFP/9CnT/HhBcb5YSckqNlNHH3sWDxLu/SPggHyannc/RA1VgCjf9oGg4GzMyUYn6jBAv6cFfJdTPYussa+ekEZJtYtkgqd6rPYGcYpd8UticTP7/LvwsiSbesC5glJQ8vr3dzSlLiYmkFGsyt+bK64JHtwkfK/4CNg0sPULstLqHlqMPEdqK99EJ1lB1ymJXxB62zI1rqcZhceu3/SDJymfF28I7li9wnpetHzPsRE9Z1/qSOvglq7fjBuCy4TQpYir9orM/bBP1qZFD7XhiG7oQNVyb7jD+JnsSiuSjDEA8eWBP06OGhqoFR/NT2BU6fDBy2QkjJ1HAg8hxk2yd04TgMo09hRafBTWXVcNKaM=
+  skip_cleanup: true
+  bucket: APStesting
+  on:
+    repo: MasterPlexus/AndroidAPS
+    branch: combo-MP
