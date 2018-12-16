@@ -1394,13 +1394,13 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
                 if (cageView != null) {
                     careportalEvent = MainApp.getDbHelper().getLastCareportalEvent(CareportalEvent.SITECHANGE);
                     double canAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
-                    applyStatuslight(cageView, "CAN (" + String.format("%.2f",canAge) + ")", canAge, cageWarn, cageUrgent, Double.MAX_VALUE, true);
+                    applyStatuslight(cageView, "CAN (" + String.format("%.1f",canAge/24) + ")", canAge, cageWarn, cageUrgent, Double.MAX_VALUE, true);
                 }
 
                 if (iageView != null) {
                     careportalEvent = MainApp.getDbHelper().getLastCareportalEvent(CareportalEvent.INSULINCHANGE);
                     double insulinAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
-                    applyStatuslight(iageView, "INS (" + String.format("%.2f",insulinAge) + ")", insulinAge, iageWarn, iageUrgent, Double.MAX_VALUE, true);
+                    applyStatuslight(iageView, "INS (" + String.format("%.1f",insulinAge/24) + ")", insulinAge, iageWarn, iageUrgent, Double.MAX_VALUE, true);
                 }
 
                 if (reservoirView != null) {
@@ -1411,7 +1411,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
                 if (sageView != null) {
                     careportalEvent = MainApp.getDbHelper().getLastCareportalEvent(CareportalEvent.SENSORCHANGE);
                     double sensorAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
-                    applyStatuslight(sageView, "SEN (" + String.format("%.2f",sensorAge) + ")", sensorAge, sageWarn, sageUrgent, Double.MAX_VALUE, true);
+                    applyStatuslight(sageView, "SEN (" + String.format("%.1f",sensorAge/24) + ")", sensorAge, sageWarn, sageUrgent, Double.MAX_VALUE, true);
                 }
 
                 if (batteryView != null) {
