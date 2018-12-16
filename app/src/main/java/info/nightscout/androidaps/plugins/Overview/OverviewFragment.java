@@ -1378,12 +1378,12 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
             if (SP.getBoolean(R.string.key_show_statuslights, false)) {
                 CareportalEvent careportalEvent;
                 NSSettingsStatus nsSettings = new NSSettingsStatus().getInstance();
-                double iageUrgent = nsSettings.getExtendedWarnValue("iage", "urgent", 96);
-                double iageWarn = nsSettings.getExtendedWarnValue("iage", "warn", 72);
-                double cageUrgent = nsSettings.getExtendedWarnValue("cage", "urgent", 72);
+                double iageUrgent = nsSettings.getExtendedWarnValue("iage", "urgent", 168);
+                double iageWarn = nsSettings.getExtendedWarnValue("iage", "warn", 144);
+                double cageUrgent = nsSettings.getExtendedWarnValue("cage", "urgent", 62);
                 double cageWarn = nsSettings.getExtendedWarnValue("cage", "warn", 48);
-                double sageUrgent = nsSettings.getExtendedWarnValue("sage", "urgent", 166);
-                double sageWarn = nsSettings.getExtendedWarnValue("sage", "warn", 164);
+                double sageUrgent = nsSettings.getExtendedWarnValue("sage", "urgent", 336);
+                double sageWarn = nsSettings.getExtendedWarnValue("sage", "warn", 312);
                 //double pbageUrgent = nsSettings.getExtendedWarnValue("pgage", "urgent", 360);
                 //double pbageWarn = nsSettings.getExtendedWarnValue("pgage", "warn", 240);
                 double batUrgent = SP.getDouble(R.string.key_statuslights_bat_critical, 5.0);
