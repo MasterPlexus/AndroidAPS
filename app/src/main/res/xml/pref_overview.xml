@@ -182,28 +182,28 @@
                 validate:testType="numericRange" />
 
             <com.andreabaccega.widget.ValidatingEditTextPreference
-                android:defaultValue="25"
+                android:defaultValue="480"
                 android:dependency="@string/key_show_statuslights"
                 android:inputType="numberSigned"
                 android:key="@string/key_statuslights_bat_warning"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:title="@string/statuslights_bat_warning"
-                validate:maxNumber="100"
+                android:title="Stunden Batterielaufzeit Warnung"
+                validate:maxNumber="600"
                 validate:minNumber="0"
                 validate:testType="numericRange" />
 
             <com.andreabaccega.widget.ValidatingEditTextPreference
-                android:defaultValue="5"
+                android:defaultValue="600"
                 android:dependency="@string/key_show_statuslights"
                 android:inputType="numberSigned"
                 android:key="@string/key_statuslights_bat_critical"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:title="@string/statuslights_bat_critical"
-                validate:maxNumber="100"
+                android:title="Stunden Batterielaufzeit Kritisch"
+                validate:maxNumber="800"
                 validate:minNumber="0"
                 validate:testType="numericRange" />
 
