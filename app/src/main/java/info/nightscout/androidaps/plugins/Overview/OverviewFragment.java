@@ -84,6 +84,7 @@ import info.nightscout.androidaps.interfaces.PumpDescription;
 import info.nightscout.androidaps.interfaces.PumpInterface;
 import info.nightscout.androidaps.logging.L;
 import info.nightscout.androidaps.plugins.Careportal.CareportalFragment;
+import info.nightscout.androidaps.plugins.Careportal.CareportalPlugin;
 import info.nightscout.androidaps.plugins.Careportal.Dialogs.NewNSTreatmentDialog;
 import info.nightscout.androidaps.plugins.Careportal.OptionsToShow;
 import info.nightscout.androidaps.plugins.ConfigBuilder.ConfigBuilderPlugin;
@@ -1624,7 +1625,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
             } else if (check.apply(warnThreshold)) {
                 view.setTextColor(MainApp.gc(R.color.ribbonWarning));
             } else {
-                view.setTextColor(MainApp.gc(R.color.ribbonDefault));
+                view.setTextColor(MainApp.gc(R.color.tempTargetConfirmation));
             }
             view.setVisibility(View.VISIBLE);
         } else {
