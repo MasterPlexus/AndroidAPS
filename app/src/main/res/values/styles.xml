@@ -11,10 +11,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/background_material_dark</item>
     </style>
 
     <style name="AppTheme.base" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColorSecondary">@color/mdtp_white</item>
+        <item name="android:colorBackground">@color/background_material_dark</item>
     </style>
 
     <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
@@ -23,9 +25,14 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:colorBackground">@color/background_material_dark</item>
     </style>
 
     <style name="ButtonSmallFontStyle">
         <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="NoActionBar_black" parent="Theme.AppCompat.NoActionBar" >
+        <item name="android:colorBackground">@color/background_material_dark_1</item>
     </style>
 </resources>
