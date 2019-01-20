@@ -82,4 +82,6 @@
     <color name="ic_launcher_background">#000000</color>
     <color name="background_material_dark">#000000</color>
     <color name="background_material_dark_1">#000000</color>
+
+    <color name="background_buttons_dark">#000000</color>
 </resources>

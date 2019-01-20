@@ -24,7 +24,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_actions_profileswitch"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/careportal_profileswitch" />
 
             <info.nightscout.utils.SingleClickButton
@@ -38,7 +38,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_actions_temptarget"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/careportal_temporarytarget" />
 
             <info.nightscout.utils.SingleClickButton
@@ -52,7 +52,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_actions_starttempbasal"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/overview_tempbasal_button" />
 
             <info.nightscout.utils.SingleClickButton
@@ -66,7 +66,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_cancelbasal"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="Cancel temp basal" />
 
             <info.nightscout.utils.SingleClickButton
@@ -80,7 +80,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_actions_startextbolus"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/overview_extendedbolus_button" />
 
             <info.nightscout.utils.SingleClickButton
@@ -94,7 +94,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_actions_cancelextbolus"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/overview_extendedbolus_cancel_button" />
 
             <info.nightscout.utils.SingleClickButton
@@ -108,7 +108,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_cp_pump_canula"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/primefill" />
 
             <info.nightscout.utils.SingleClickButton
@@ -122,7 +122,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_danarhistory"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/nav_historybrowser" />
 
             <info.nightscout.utils.SingleClickButton
@@ -136,7 +136,7 @@
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.5"
                 android:drawableTop="@drawable/icon_danarstats"
-                android:background="@color/ribbonTextWarning"
+                android:background="@color/background_buttons_dark"
                 android:text="@string/danar_stats_tdd" />
 
         </LinearLayout>
