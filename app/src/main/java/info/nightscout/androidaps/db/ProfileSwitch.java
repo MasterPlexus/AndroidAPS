@@ -122,24 +122,42 @@ public class ProfileSwitch implements Interval, DataPointWithLabelInterface {
 
     public boolean isEqual(ProfileSwitch other) {
         if (date != other.date) {
+            log.debug("profileswitch date false");
             return false;
         }
-        if (durationInMinutes != other.durationInMinutes)
+        if (durationInMinutes != other.durationInMinutes) {
+            log.debug("profileswitch duration false");
             return false;
-        if (percentage != other.percentage)
+        }
+        if (percentage != other.percentage) {
+            log.debug("profileswitch percentage false");
             return false;
-        if (timeshift != other.timeshift)
+        }
+        if (timeshift != other.timeshift) {
+            log.debug("profileswitch timeshift false");
             return false;
-        if (isCPP != other.isCPP)
+        }
+        if (isCPP != other.isCPP) {
+            log.debug("profileswitch CPP false");
             return false;
-        if (!Objects.equals(_id, other._id))
+        }
+        if (!Objects.equals(_id, other._id)) {
+            log.debug("profileswitch id false");
             return false;
-        if (!Objects.equals(profilePlugin, other.profilePlugin))
+        }
+        if (!Objects.equals(profilePlugin, other.profilePlugin)) {
+            log.debug("profileswitch profilePlugin false");
             return false;
-        if (!Objects.equals(profileJson, other.profileJson))
+        }
+        if (!Objects.equals(profileJson, other.profileJson)) {
+            log.debug("profileswitch profileJson false");
             return false;
-        if (!Objects.equals(profileName, other.profileName))
+        }
+        if (!Objects.equals(profileName, other.profileName)) {
+            log.debug("profileswitch profileName false");
             return false;
+        }
+        log.debug("profileswitch is identical");
         return true;
     }
 
