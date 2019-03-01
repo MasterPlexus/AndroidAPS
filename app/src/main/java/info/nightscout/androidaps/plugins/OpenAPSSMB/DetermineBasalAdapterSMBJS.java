@@ -32,8 +32,8 @@ import info.nightscout.androidaps.plugins.IobCobCalculator.IobCobCalculatorPlugi
 import info.nightscout.androidaps.plugins.Loop.ScriptReader;
 import info.nightscout.androidaps.plugins.OpenAPSMA.LoggerCallback;
 import info.nightscout.androidaps.plugins.Treatments.TreatmentsPlugin;
-import info.nightscout.utils.SP;
-import info.nightscout.utils.SafeParse;
+import info.nightscout.androidaps.utils.SP;
+import info.nightscout.androidaps.utils.SafeParse;
 
 public class DetermineBasalAdapterSMBJS {
     private static Logger log = LoggerFactory.getLogger(L.APS);
@@ -259,7 +259,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("allowSMB_with_high_temptarget", SP.getBoolean(R.string.key_allowSMB_with_high_temptarget, false));
         mProfile.put("enableSMB_always", SP.getBoolean(R.string.key_enableSMB_always, false) && advancedFiltering);
         mProfile.put("enableSMB_after_carbs", SP.getBoolean(R.string.key_enableSMB_after_carbs, false) && advancedFiltering);
-        mProfile.put("maxSMBBasalMinutes", SP.getInt("key_smbmaxminutes", SMBDefaults.maxSMBBasalMinutes));
+        mProfile.put("maxSMBBasalMinutes", SP.getInt(R.string.key_smbmaxminutes, SMBDefaults.maxSMBBasalMinutes));
         mProfile.put("maxUAMSMBBasalMinutes", SP.getInt("key_uamsmbmaxminutes", SMBDefaults.maxUAMSMBBasalMinutes));
         if (bolusincrement < pumpbolusstep){
           //the bolus incrument is less than what the pump can support (by pump settings or pump restriction), set to value supported by the pump

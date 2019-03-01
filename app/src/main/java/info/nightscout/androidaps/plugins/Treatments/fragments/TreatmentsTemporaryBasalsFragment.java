@@ -31,9 +31,9 @@ import info.nightscout.androidaps.plugins.Common.SubscriberFragment;
 import info.nightscout.androidaps.plugins.ConfigBuilder.ProfileFunctions;
 import info.nightscout.androidaps.plugins.NSClientInternal.UploadQueue;
 import info.nightscout.androidaps.plugins.Treatments.TreatmentsPlugin;
-import info.nightscout.utils.DateUtil;
-import info.nightscout.utils.DecimalFormatter;
-import info.nightscout.utils.FabricPrivacy;
+import info.nightscout.androidaps.utils.DateUtil;
+import info.nightscout.androidaps.utils.DecimalFormatter;
+import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.plugins.NSClientInternal.NSUpload;
 
 
@@ -87,7 +87,7 @@ public class TreatmentsTemporaryBasalsFragment extends SubscriberFragment {
                 if (tempBasal.isAbsolute) {
                     Profile profile = ProfileFunctions.getInstance().getProfile(tempBasal.date);
                     if (profile != null) {
-                        holder.absolute.setText(DecimalFormatter.to0Decimal(tempBasal.tempBasalConvertedToAbsolute(tempBasal.date, profile), " U/h"));
+                        holder.absolute.setText(DecimalFormatter.to2Decimal(tempBasal.tempBasalConvertedToAbsolute(tempBasal.date, profile), " U/h"));
                         holder.percent.setText("");
                     } else {
                         holder.absolute.setText(MainApp.gs(R.string.noprofile));

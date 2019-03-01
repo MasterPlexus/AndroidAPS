@@ -45,7 +45,7 @@ import info.nightscout.androidaps.plugins.Overview.graphExtensions.ScaledDataPoi
 import info.nightscout.androidaps.plugins.Overview.graphExtensions.TimeAsXAxisLabelFormatter;
 import info.nightscout.androidaps.plugins.Treatments.Treatment;
 import info.nightscout.androidaps.plugins.Treatments.TreatmentsPlugin;
-import info.nightscout.utils.Round;
+import info.nightscout.androidaps.utils.Round;
 
 /**
  * Created by mike on 18.10.2017.
@@ -78,6 +78,8 @@ public class GraphData {
         if (bgReadingsArray == null || bgReadingsArray.size() == 0) {
             if (L.isEnabled(L.OVERVIEW))
                 log.debug("No BG data.");
+            maxY = 10;
+            minY = 0;
             return;
         }
 

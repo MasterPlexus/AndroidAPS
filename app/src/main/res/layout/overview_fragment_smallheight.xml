@@ -390,7 +390,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_accepttempbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="fill_parent"
@@ -409,7 +409,7 @@
                 android:paddingRight="5dp"
                 android:orientation="horizontal">
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_treatmentbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="0px"
@@ -424,7 +424,7 @@
                     android:textColor="@color/colorTreatmentButton"
                     android:textSize="10sp" />
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_insulinbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="0px"
@@ -440,7 +440,7 @@
                     android:textSize="10sp"
                     android:visibility="gone" />
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_carbsbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="0px"
@@ -455,7 +455,7 @@
                     android:textColor="@color/colorCarbsButton"
                     android:textSize="10sp" />
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_wizardbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="0px"
@@ -471,7 +471,7 @@
                     android:textSize="10sp"
                     android:visibility="gone" />
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_calibrationbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="0px"
@@ -487,7 +487,7 @@
                     android:textSize="10sp"
                     android:visibility="gone" />
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_cgmbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="0px"
@@ -502,7 +502,7 @@
                     android:textColor="@color/colorCalibrationButton"
                     android:textSize="10sp"/>
 
-                <info.nightscout.utils.SingleClickButton
+                <info.nightscout.androidaps.utils.SingleClickButton
                     android:id="@+id/overview_quickwizardbutton"
                     style="?android:attr/buttonStyle"
                     android:layout_width="0px"
