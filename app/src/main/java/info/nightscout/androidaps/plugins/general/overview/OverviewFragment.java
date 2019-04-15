@@ -1395,33 +1395,38 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
                 double resUrgent = SP.getDouble(R.string.key_statuslights_res_critical, 10.0);
                 double resWarn = SP.getDouble(R.string.key_statuslights_res_warning, 80.0);
 
-                if (cageView != null) {
+                if (cageView != null && SP.getBoolean("key_show_statuslights_CAN", true) ) {
                     careportalEvent = MainApp.getDbHelper().getLastCareportalEvent(CareportalEvent.SITECHANGE);
                     double canAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
-                    applyStatuslight(cageView, "CAN (" + String.format("%.1f",canAge/24) + ")", canAge, cageWarn, cageUrgent, Double.MAX_VALUE, true);
+                    String bracked= SP.getBoolean("key_show_statuslights_values", true) ? " (" + String.format("%.1f",canAge/24) + ")" : "";
+                    applyStatuslight(cageView, "CAN" + bracked, canAge, cageWarn, cageUrgent, Double.MAX_VALUE, true);
                 }
 
-                if (iageView != null) {
+                if (iageView != null && SP.getBoolean("key_show_statuslights_INS", false) ) {
                     careportalEvent = MainApp.getDbHelper().getLastCareportalEvent(CareportalEvent.INSULINCHANGE);
                     double insulinAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
-                    applyStatuslight(iageView, "INS (" + String.format("%.1f",insulinAge/24) + ")", insulinAge, iageWarn, iageUrgent, Double.MAX_VALUE, true);
+                    String bracked= SP.getBoolean("key_show_statuslights_values", true) ? " (" + String.format("%.1f",insulinAge/24) + ")" : "";
+                    applyStatuslight(iageView, "INS" + bracked, insulinAge, iageWarn, iageUrgent, Double.MAX_VALUE, true);
                 }
 
-                if (reservoirView != null) {
+                if (reservoirView != null && SP.getBoolean("key_show_statuslights_RES", true) ) {
                     double reservoirLevel = pump.isInitialized() ? pump.getReservoirLevel() : -1;
-                    applyStatuslight(reservoirView, "RES (" + String.format("%.0f",reservoirLevel) + ")", reservoirLevel, resWarn, resUrgent, -1, false);
+                    String bracked= SP.getBoolean("key_show_statuslights_values", true) ? " (" + String.format("%.0f",reservoirLevel) + ")" : "";
+                    applyStatuslight(reservoirView, "RES" + bracked, reservoirLevel, resWarn, resUrgent, -1, false);
                 }
 
-                if (sageView != null) {
+                if (sageView != null && SP.getBoolean("key_show_statuslights_SEN", true) ) {
                     careportalEvent = MainApp.getDbHelper().getLastCareportalEvent(CareportalEvent.SENSORCHANGE);
                     double sensorAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
-                    applyStatuslight(sageView, "SEN (" + String.format("%.1f",sensorAge/24) + ")", sensorAge, sageWarn, sageUrgent, Double.MAX_VALUE, true);
+                    String bracked= SP.getBoolean("key_show_statuslights_values", true) ? " (" + String.format("%.1f",sensorAge/24) + ")" : "";
+                    applyStatuslight(sageView, "SEN" + bracked, sensorAge, sageWarn, sageUrgent, Double.MAX_VALUE, true);
                 }
 
-                if (batteryView != null) {
+                if (batteryView != null && SP.getBoolean("key_show_statuslights_BAT", true) ) {
                     careportalEvent = MainApp.getDbHelper().getLastCareportalEvent(CareportalEvent.PUMPBATTERYCHANGE);
                     double batteryAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
-                    applyStatuslight(batteryView, "BAT (" + String.format("%.1f",batteryAge/24) + ")", batteryAge, batWarn, batUrgent, Double.MAX_VALUE, true);
+                    String bracked= SP.getBoolean("key_show_statuslights_values", true) ? " (" + String.format("%.1f",batteryAge/24) + ")" : "";
+                    applyStatuslight(batteryView, "BAT" + bracked, batteryAge, batWarn, batUrgent, Double.MAX_VALUE, true);
                 }
                 statuslightsLayout.setVisibility(View.VISIBLE);
             } else {

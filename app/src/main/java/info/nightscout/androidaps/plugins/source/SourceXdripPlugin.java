@@ -44,7 +44,7 @@ public class SourceXdripPlugin extends PluginBase implements BgSourceInterface {
 
     @Override
     public boolean advancedFilteringSupported() {
-        return true;
+        return advancedFiltering;;
     }
 
     @Override
