@@ -155,6 +155,36 @@
                 android:summary="@string/show_statuslights_summary"
                 android:title="@string/show_statuslights" />
 
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="key_show_statuslights_values"
+                android:title="Show Values in Brackets" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="key_show_statuslights_CAN"
+                android:title="Show canualar" />
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="key_show_statuslights_INS"
+                android:title="Show Insulin-Age" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="key_show_statuslights_RES"
+                android:title="Show Reseroir-Level" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="key_show_statuslights_SEN"
+                android:title="Show Sensor-Age" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="key_show_statuslights_BAT"
+                android:title="Show Pump-Battery-Age" />
+
             <com.andreabaccega.widget.ValidatingEditTextPreference
                 android:defaultValue="80"
                 android:dependency="@string/key_show_statuslights"
