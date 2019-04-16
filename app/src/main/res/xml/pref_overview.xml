@@ -157,6 +157,11 @@
 
             <SwitchPreference
                 android:defaultValue="true"
+                android:key="key_dot_size"
+                android:title="small dots" />
+
+            <SwitchPreference
+                android:defaultValue="true"
                 android:key="key_show_statuslights_values"
                 android:title="Show Values in Brackets" />
 
