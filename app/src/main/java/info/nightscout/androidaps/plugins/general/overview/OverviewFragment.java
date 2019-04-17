@@ -163,12 +163,14 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
     TextView cage;
     TextView sage;
     TextView pbage;
+    TextView brbat;
 
     TextView iageView;
     TextView cageView;
     TextView reservoirView;
     TextView sageView;
     TextView batteryView;
+    TextView bridgeView;
     LinearLayout statuslightsLayout;
 
     RecyclerView notificationsView;
@@ -267,12 +269,14 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
         sage = (TextView) view.findViewById(R.id.careportal_sensorage);
         pbage = (TextView) view.findViewById(R.id.careportal_pbage);
 
-        iageView = (TextView) view.findViewById(R.id.overview_insulinage);
-        cageView = (TextView) view.findViewById(R.id.overview_canulaage);
-        reservoirView = (TextView) view.findViewById(R.id.overview_reservoirlevel);
-        sageView = (TextView) view.findViewById(R.id.overview_sensorage);
-        batteryView = (TextView) view.findViewById(R.id.overview_batterylevel);
-        statuslightsLayout = (LinearLayout) view.findViewById(R.id.overview_statuslights);
+
+            iageView = (TextView) view.findViewById(R.id.overview_insulinage);
+            cageView = (TextView) view.findViewById(R.id.overview_canulaage);
+            reservoirView = (TextView) view.findViewById(R.id.overview_reservoirlevel);
+            sageView = (TextView) view.findViewById(R.id.overview_sensorage);
+            batteryView = (TextView) view.findViewById(R.id.overview_batterylevel);
+            bridgeView = (TextView) view.findViewById(R.id.overview_bridge);
+            statuslightsLayout = (LinearLayout) view.findViewById(R.id.overview_statuslights);
 
         bgGraph = (GraphView) view.findViewById(R.id.overview_bggraph);
         iobGraph = (GraphView) view.findViewById(R.id.overview_iobgraph);
@@ -1427,6 +1431,13 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
                     double batteryAge = careportalEvent != null ? careportalEvent.getHoursFromStart() : Double.MAX_VALUE;
                     String bracked= SP.getBoolean("key_show_statuslights_values", true) ? " (" + String.format("%.1f",batteryAge/24) + ")" : "";
                     applyStatuslight(batteryView, "BAT" + bracked, batteryAge, batWarn, batUrgent, Double.MAX_VALUE, true);
+                }
+
+                if (bridgeView != null && SP.getBoolean("key_show_statuslights_BAT", true) ) {
+                    careportalEvent = MainApp.getDbHelper().getLastCareportalEvent("Bridge");
+                    double bridge = careportalEvent != null ? careportalEvent.getSize() : Double.MAX_VALUE;
+                    String bracked= SP.getBoolean("key_show_statuslights_values", true) ? " (" + String.format("%.1f",bridge) + ")" : "";
+                    applyStatuslight(bridgeView, "BRI" + bracked, bridge, 25, 10, Double.MAX_VALUE, true);
                 }
                 statuslightsLayout.setVisibility(View.VISIBLE);
             } else {

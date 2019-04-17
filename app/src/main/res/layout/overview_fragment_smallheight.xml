@@ -240,6 +240,15 @@
                     android:text=""
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/overview_bridge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="5dp"
+                    android:layout_marginHorizontal="3dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <TextView
