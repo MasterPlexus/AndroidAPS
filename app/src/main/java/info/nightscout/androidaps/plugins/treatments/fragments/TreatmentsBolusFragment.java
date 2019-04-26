@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.crashlytics.android.answers.CustomEvent;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -28,19 +27,18 @@ import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.data.Iob;
 import info.nightscout.androidaps.data.Profile;
 import info.nightscout.androidaps.db.Source;
-import info.nightscout.androidaps.events.EventNewBG;
 import info.nightscout.androidaps.events.EventTreatmentChange;
 import info.nightscout.androidaps.plugins.common.SubscriberFragment;
 import info.nightscout.androidaps.plugins.configBuilder.ProfileFunctions;
 import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
 import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
+import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventAutosensCalculationFinished;
 import info.nightscout.androidaps.plugins.treatments.Treatment;
 import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.plugins.treatments.dialogs.WizardInfoDialog;
 import info.nightscout.androidaps.services.Intents;
 import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.DecimalFormatter;
-import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.utils.SP;
 
 import static info.nightscout.androidaps.utils.DateUtil.now;
@@ -165,7 +163,6 @@ public class TreatmentsBolusFragment extends SubscriberFragment implements View.
                                     TreatmentsPlugin.getPlugin().getService().delete(treatment);
                                 }
                                 updateGUI();
-                                FabricPrivacy.getInstance().logCustom(new CustomEvent("RemoveTreatment"));
                             }
                         });
                         builder.setNegativeButton(MainApp.gs(R.string.cancel), null);
@@ -266,7 +263,7 @@ public class TreatmentsBolusFragment extends SubscriberFragment implements View.
     }
 
     @Subscribe
-    public void onStatusEvent(final EventNewBG ev) {
+    public void onStatusEvent(final EventAutosensCalculationFinished ev) {
         updateGUI();
     }
 

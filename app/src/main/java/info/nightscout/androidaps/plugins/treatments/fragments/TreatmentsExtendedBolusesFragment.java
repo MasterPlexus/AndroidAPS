@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.crashlytics.android.answers.CustomEvent;
 import com.squareup.otto.Subscribe;
 
 import info.nightscout.androidaps.MainApp;
@@ -25,14 +24,13 @@ import info.nightscout.androidaps.data.IobTotal;
 import info.nightscout.androidaps.db.ExtendedBolus;
 import info.nightscout.androidaps.db.Source;
 import info.nightscout.androidaps.events.EventExtendedBolusChange;
-import info.nightscout.androidaps.events.EventNewBG;
 import info.nightscout.androidaps.plugins.common.SubscriberFragment;
+import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
 import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
+import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventAutosensCalculationFinished;
 import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.DecimalFormatter;
-import info.nightscout.androidaps.utils.FabricPrivacy;
-import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
 
 
 public class TreatmentsExtendedBolusesFragment extends SubscriberFragment {
@@ -150,7 +148,6 @@ public class TreatmentsExtendedBolusesFragment extends SubscriberFragment {
                                     UploadQueue.removeID("dbAdd", _id);
                                 }
                                 MainApp.getDbHelper().delete(extendedBolus);
-                                FabricPrivacy.getInstance().logCustom(new CustomEvent("RemoveExtendedBolus"));
                             }
                         });
                         builder.setNegativeButton(MainApp.gs(R.string.cancel), null);
@@ -186,7 +183,7 @@ public class TreatmentsExtendedBolusesFragment extends SubscriberFragment {
     }
 
     @Subscribe
-    public void onStatusEvent(final EventNewBG ev) {
+    public void onStatusEvent(final EventAutosensCalculationFinished ev) {
         updateGUI();
     }
 

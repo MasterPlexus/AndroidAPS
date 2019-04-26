@@ -65,9 +65,7 @@ public class IobCobCalculatorPlugin extends PluginBase {
     private volatile List<BgReading> bgReadings = null; // newest at index 0
     private volatile List<BgReading> bucketed_data = null;
 
-    private double dia = Constants.defaultDIA;
-
-    final Object dataLock = new Object();
+    private final Object dataLock = new Object();
 
     boolean stopCalculationTrigger = false;
     private Thread thread = null;
@@ -110,6 +108,10 @@ public class IobCobCalculatorPlugin extends PluginBase {
         return bucketed_data;
     }
 
+    public Object getDataLock() {
+        return dataLock;
+    }
+
     // roundup to whole minute
     public static long roundUpTime(long time) {
         if (time % 60000 == 0)
@@ -118,11 +120,22 @@ public class IobCobCalculatorPlugin extends PluginBase {
         return rounded;
     }
 
-    void loadBgData(long now) {
-        long start = (long) (now - 60 * 60 * 1000L * (24 + dia));
-        bgReadings = MainApp.getDbHelper().getBgreadingsDataFromTime(start, now, false);
-        if (L.isEnabled(L.AUTOSENS))
-            log.debug("BG data loaded. Size: " + bgReadings.size() + " Start date: " + DateUtil.dateAndTimeString(start) + " End date: " + DateUtil.dateAndTimeString(now));
+    void loadBgData(long to) {
+        Profile profile = ProfileFunctions.getInstance().getProfile(to);
+        double dia = Constants.defaultDIA;
+        if (profile != null) dia = profile.getDia();
+        long start = to - T.hours((long) (24 + dia)).msecs();
+        if (DateUtil.isCloseToNow(to)) {
+            // if close to now expect there can be some readings with time in close future (caused by wrong time setting)
+            // so read all records
+            bgReadings = MainApp.getDbHelper().getBgreadingsDataFromTime(start, false);
+            if (L.isEnabled(L.AUTOSENS))
+                log.debug("BG data loaded. Size: " + bgReadings.size() + " Start date: " + DateUtil.dateAndTimeString(start));
+        } else {
+            bgReadings = MainApp.getDbHelper().getBgreadingsDataFromTime(start, to, false);
+            if (L.isEnabled(L.AUTOSENS))
+                log.debug("BG data loaded. Size: " + bgReadings.size() + " Start date: " + DateUtil.dateAndTimeString(start) + " End date: " + DateUtil.dateAndTimeString(to));
+        }
     }
 
     public boolean isAbout5minData() {
@@ -487,6 +500,10 @@ public class IobCobCalculatorPlugin extends PluginBase {
             log.debug("AUTOSENSDATA null: Exception catched (" + reason + ")");
             return null;
         }
+        if (data == null) {
+            log.debug("AUTOSENSDATA null: data==null");
+            return null;
+        }
         if (data.time < System.currentTimeMillis() - 11 * 60 * 1000) {
             if (L.isEnabled(L.AUTOSENS))
                 log.debug("AUTOSENSDATA null: data is old (" + reason + ") size()=" + autosensDataTable.size() + " lastdata=" + DateUtil.dateAndTimeString(data.time));
@@ -608,10 +625,6 @@ public class IobCobCalculatorPlugin extends PluginBase {
         }
         if (ConfigBuilderPlugin.getPlugin() == null)
             return; // app still initializing
-        Profile profile = ProfileFunctions.getInstance().getProfile();
-        if (profile == null)
-            return; // app still initializing
-        dia = profile.getDia();
         if (ev == null) { // on init no need of reset
             return;
         }
@@ -621,6 +634,7 @@ public class IobCobCalculatorPlugin extends PluginBase {
                 log.debug("Invalidating cached data because of new profile. IOB: " + iobTable.size() + " Autosens: " + autosensDataTable.size() + " records");
             iobTable = new LongSparseArray<>();
             autosensDataTable = new LongSparseArray<>();
+            basalDataTable = new LongSparseArray<>();
         }
         runCalculation("onNewProfile", System.currentTimeMillis(), false, true, ev);
     }
@@ -643,9 +657,10 @@ public class IobCobCalculatorPlugin extends PluginBase {
             stopCalculation("onEventPreferenceChange");
             synchronized (dataLock) {
                 if (L.isEnabled(L.AUTOSENS))
-                    log.debug("Invalidating cached data because of preference change. IOB: " + iobTable.size() + " Autosens: " + autosensDataTable.size() + " records");
+                    log.debug("Invalidating cached data because of preference change. IOB: " + iobTable.size() + " Autosens: " + autosensDataTable.size() + " records" + " BasalData: " + basalDataTable.size() + " records");
                 iobTable = new LongSparseArray<>();
                 autosensDataTable = new LongSparseArray<>();
+                basalDataTable = new LongSparseArray<>();
             }
             runCalculation("onEventPreferenceChange", System.currentTimeMillis(), false, true, ev);
         }
@@ -721,6 +736,7 @@ public class IobCobCalculatorPlugin extends PluginBase {
                 log.debug("Clearing cached data.");
             iobTable = new LongSparseArray<>();
             autosensDataTable = new LongSparseArray<>();
+            basalDataTable = new LongSparseArray<>();
         }
     }
 

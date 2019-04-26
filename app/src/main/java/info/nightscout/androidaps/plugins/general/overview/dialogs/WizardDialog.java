@@ -1,4 +1,4 @@
-package info.nightscout.androidaps.plugins.general.overview.Dialogs;
+package info.nightscout.androidaps.plugins.general.overview.dialogs;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.crashlytics.android.answers.CustomEvent;
 import com.squareup.otto.Subscribe;
 
 import org.json.JSONException;
@@ -51,23 +50,21 @@ import info.nightscout.androidaps.db.DatabaseHelper;
 import info.nightscout.androidaps.db.Source;
 import info.nightscout.androidaps.db.TempTarget;
 import info.nightscout.androidaps.events.EventFeatureRunning;
-import info.nightscout.androidaps.events.EventNewBG;
 import info.nightscout.androidaps.events.EventRefreshOverview;
 import info.nightscout.androidaps.interfaces.Constraint;
 import info.nightscout.androidaps.interfaces.PluginType;
 import info.nightscout.androidaps.interfaces.PumpInterface;
+import info.nightscout.androidaps.plugins.aps.loop.LoopPlugin;
 import info.nightscout.androidaps.plugins.configBuilder.ConfigBuilderPlugin;
 import info.nightscout.androidaps.plugins.configBuilder.ProfileFunctions;
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.CobInfo;
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobCalculatorPlugin;
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventAutosensCalculationFinished;
-import info.nightscout.androidaps.plugins.aps.loop.LoopPlugin;
 import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.queue.Callback;
 import info.nightscout.androidaps.utils.BolusWizard;
 import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.DecimalFormatter;
-import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.utils.NumberPicker;
 import info.nightscout.androidaps.utils.SP;
 import info.nightscout.androidaps.utils.SafeParse;
@@ -164,18 +161,6 @@ public class WizardDialog extends DialogFragment implements OnClickListener, Com
         super.onSaveInstanceState(savedInstanceState);
     }
 
-
-    @Subscribe
-    public void onStatusEvent(final EventNewBG e) {
-        Activity activity = getActivity();
-        if (activity != null)
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    calculateInsulin();
-                }
-            });
-    }
 
     @Subscribe
     public void onStatusEvent(final EventAutosensCalculationFinished e) {
@@ -411,7 +396,6 @@ public class WizardDialog extends DialogFragment implements OnClickListener, Com
                                     } else {
                                         TreatmentsPlugin.getPlugin().addToHistoryTreatment(detailedBolusInfo, false);
                                     }
-                                    FabricPrivacy.getInstance().logCustom(new CustomEvent("Wizard"));
                                 }
                             }
                         }

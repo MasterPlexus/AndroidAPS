@@ -20,7 +20,6 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.crashlytics.android.answers.CustomEvent;
 import com.google.common.collect.Lists;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -40,7 +39,7 @@ import java.util.List;
 import info.nightscout.androidaps.Constants;
 import info.nightscout.androidaps.MainApp;
 import info.nightscout.androidaps.R;
-import info.nightscout.androidaps.data.GlucoseStatus;
+import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus;
 import info.nightscout.androidaps.data.Profile;
 import info.nightscout.androidaps.data.ProfileStore;
 import info.nightscout.androidaps.db.BgReading;
@@ -48,14 +47,13 @@ import info.nightscout.androidaps.db.CareportalEvent;
 import info.nightscout.androidaps.db.ProfileSwitch;
 import info.nightscout.androidaps.db.Source;
 import info.nightscout.androidaps.db.TempTarget;
-import info.nightscout.androidaps.plugins.general.careportal.OptionsToShow;
 import info.nightscout.androidaps.plugins.configBuilder.ConfigBuilderPlugin;
 import info.nightscout.androidaps.plugins.configBuilder.ProfileFunctions;
+import info.nightscout.androidaps.plugins.general.careportal.OptionsToShow;
 import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
 import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.DefaultValueHelper;
-import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.utils.HardLimits;
 import info.nightscout.androidaps.utils.JsonHelper;
 import info.nightscout.androidaps.utils.NumberPicker;
@@ -722,7 +720,7 @@ public class NewNSTreatmentDialog extends DialogFragment implements View.OnClick
     public void createNSTreatment(JSONObject data) {
         if (options.executeProfileSwitch) {
             if (data.has("profile")) {
-                doProfileSwitch(profileStore, JsonHelper.safeGetString(data, "profile"), JsonHelper.safeGetInt(data, "duration"), JsonHelper.safeGetInt(data, "percentage"), JsonHelper.safeGetInt(data, "timeshift"));
+                ProfileFunctions.doProfileSwitch(profileStore, JsonHelper.safeGetString(data, "profile"), JsonHelper.safeGetInt(data, "duration"), JsonHelper.safeGetInt(data, "percentage"), JsonHelper.safeGetInt(data, "timeshift"));
             }
         } else if (options.executeTempTarget) {
             final int duration = JsonHelper.safeGetInt(data, "duration");
@@ -742,11 +740,10 @@ public class NewNSTreatmentDialog extends DialogFragment implements View.OnClick
                     tempTarget.low(0).high(0);
                 }
                 TreatmentsPlugin.getPlugin().addToHistoryTempTarget(tempTarget);
-                FabricPrivacy.getInstance().logCustom(new CustomEvent("TempTarget"));
             }
         } else {
             if (JsonHelper.safeGetString(data, "eventType").equals(CareportalEvent.PROFILESWITCH)) {
-                ProfileSwitch profileSwitch = prepareProfileSwitch(
+                ProfileSwitch profileSwitch = ProfileFunctions.prepareProfileSwitch(
                         profileStore,
                         JsonHelper.safeGetString(data, "profile"),
                         JsonHelper.safeGetInt(data, "duration"),
@@ -758,47 +755,6 @@ public class NewNSTreatmentDialog extends DialogFragment implements View.OnClick
             } else {
                 NSUpload.uploadCareportalEntryToNS(data);
             }
-            FabricPrivacy.getInstance().logCustom(new CustomEvent("NSTreatment"));
-        }
-    }
-
-    public static ProfileSwitch prepareProfileSwitch(final ProfileStore profileStore, final String profileName, final int duration, final int percentage, final int timeshift, long date) {
-        ProfileSwitch profileSwitch = new ProfileSwitch();
-        profileSwitch.date = date;
-        profileSwitch.source = Source.USER;
-        profileSwitch.profileName = profileName;
-        profileSwitch.profileJson = profileStore.getSpecificProfile(profileName).getData().toString();
-        profileSwitch.profilePlugin = ConfigBuilderPlugin.getPlugin().getActiveProfileInterface().getClass().getName();
-        profileSwitch.durationInMinutes = duration;
-        profileSwitch.isCPP = percentage != 100 || timeshift != 0;
-        profileSwitch.timeshift = timeshift;
-        profileSwitch.percentage = percentage;
-        return profileSwitch;
-    }
-
-    public static void doProfileSwitch(final ProfileStore profileStore, final String profileName, final int duration, final int percentage, final int timeshift) {
-        ProfileSwitch profileSwitch = prepareProfileSwitch(profileStore, profileName, duration, percentage, timeshift, System.currentTimeMillis());
-        TreatmentsPlugin.getPlugin().addToHistoryProfileSwitch(profileSwitch);
-        FabricPrivacy.getInstance().logCustom(new CustomEvent("ProfileSwitch"));
-    }
-
-    public static void doProfileSwitch(final int duration, final int percentage, final int timeshift) {
-        ProfileSwitch profileSwitch = TreatmentsPlugin.getPlugin().getProfileSwitchFromHistory(System.currentTimeMillis());
-        if (profileSwitch != null) {
-            profileSwitch = new ProfileSwitch();
-            profileSwitch.date = System.currentTimeMillis();
-            profileSwitch.source = Source.USER;
-            profileSwitch.profileName = ProfileFunctions.getInstance().getProfileName(System.currentTimeMillis(), false);
-            profileSwitch.profileJson = ProfileFunctions.getInstance().getProfile().getData().toString();
-            profileSwitch.profilePlugin = ConfigBuilderPlugin.getPlugin().getActiveProfileInterface().getClass().getName();
-            profileSwitch.durationInMinutes = duration;
-            profileSwitch.isCPP = percentage != 100 || timeshift != 0;
-            profileSwitch.timeshift = timeshift;
-            profileSwitch.percentage = percentage;
-            TreatmentsPlugin.getPlugin().addToHistoryProfileSwitch(profileSwitch);
-            FabricPrivacy.getInstance().logCustom(new CustomEvent("ProfileSwitch"));
-        } else {
-            log.error("No profile switch existing");
         }
     }
 

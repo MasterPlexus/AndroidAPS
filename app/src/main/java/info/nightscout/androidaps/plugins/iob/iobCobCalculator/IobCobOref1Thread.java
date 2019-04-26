@@ -5,8 +5,6 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.v4.util.LongSparseArray;
 
-import com.crashlytics.android.answers.CustomEvent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +14,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import info.nightscout.androidaps.BuildConfig;
 import info.nightscout.androidaps.Constants;
 import info.nightscout.androidaps.MainApp;
 import info.nightscout.androidaps.R;
@@ -26,13 +23,13 @@ import info.nightscout.androidaps.db.BgReading;
 import info.nightscout.androidaps.db.TempTarget;
 import info.nightscout.androidaps.events.Event;
 import info.nightscout.androidaps.logging.L;
+import info.nightscout.androidaps.plugins.aps.openAPSSMB.SMBDefaults;
 import info.nightscout.androidaps.plugins.configBuilder.ConfigBuilderPlugin;
 import info.nightscout.androidaps.plugins.configBuilder.ProfileFunctions;
-import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventAutosensCalculationFinished;
-import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventIobCalculationProgress;
-import info.nightscout.androidaps.plugins.aps.openAPSSMB.SMBDefaults;
 import info.nightscout.androidaps.plugins.general.overview.events.EventNewNotification;
 import info.nightscout.androidaps.plugins.general.overview.notifications.Notification;
+import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventAutosensCalculationFinished;
+import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventIobCalculationProgress;
 import info.nightscout.androidaps.plugins.treatments.Treatment;
 import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.DateUtil;
@@ -41,6 +38,7 @@ import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.utils.MidnightTime;
 import info.nightscout.androidaps.utils.Profiler;
 import info.nightscout.androidaps.utils.SP;
+import info.nightscout.androidaps.utils.T;
 
 import static info.nightscout.androidaps.utils.DateUtil.now;
 import static java.util.Calendar.MINUTE;
@@ -61,7 +59,7 @@ public class IobCobOref1Thread extends Thread {
 
     private PowerManager.WakeLock mWakeLock;
 
-    public IobCobOref1Thread(IobCobCalculatorPlugin plugin, String from, long end, boolean bgDataReload, boolean limitDataToOldestAvailable, Event cause) {
+    IobCobOref1Thread(IobCobCalculatorPlugin plugin, String from, long end, boolean bgDataReload, boolean limitDataToOldestAvailable, Event cause) {
         super();
 
         this.iobCobCalculatorPlugin = plugin;
@@ -72,13 +70,15 @@ public class IobCobOref1Thread extends Thread {
         this.end = end;
 
         PowerManager powerManager = (PowerManager) MainApp.instance().getApplicationContext().getSystemService(Context.POWER_SERVICE);
-        mWakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "iobCobThread");
+        if (powerManager != null)
+            mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainApp.gs(R.string.app_name) + ":iobCobThread");
     }
 
     @Override
     public final void run() {
         long start = DateUtil.now();
-        mWakeLock.acquire();
+        if (mWakeLock != null)
+            mWakeLock.acquire(T.mins(10).msecs());
         try {
             if (L.isEnabled(L.AUTOSENS))
                 log.debug("AUTOSENSDATA thread started: " + from);
@@ -96,7 +96,7 @@ public class IobCobOref1Thread extends Thread {
 
             long oldestTimeWithData = iobCobCalculatorPlugin.calculateDetectionStart(end, limitDataToOldestAvailable);
 
-            synchronized (iobCobCalculatorPlugin.dataLock) {
+            synchronized (iobCobCalculatorPlugin.getDataLock()) {
                 if (bgDataReload) {
                     iobCobCalculatorPlugin.loadBgData(end);
                     iobCobCalculatorPlugin.createBucketedData();
@@ -173,7 +173,7 @@ public class IobCobOref1Thread extends Thread {
 
                     double bgi = -iob.activity * sens * 5;
                     double deviation = delta - bgi;
-                    double avgDeviation = Math.round((avgDelta - bgi) * 1000) / 1000;
+                    double avgDeviation = Math.round((avgDelta - bgi) * 1000) / 1000d;
 
                     double slopeFromMaxDeviation = 0;
                     double slopeFromMinDeviation = 999;
@@ -221,13 +221,6 @@ public class IobCobOref1Thread extends Thread {
                             } catch (Exception e) {
                                 log.error("Unhandled exception", e);
                                 FabricPrivacy.logException(e);
-                                FabricPrivacy.getInstance().logCustom(new CustomEvent("CatchedError")
-                                        .putCustomAttribute("buildversion", BuildConfig.BUILDVERSION)
-                                        .putCustomAttribute("version", BuildConfig.VERSION)
-                                        .putCustomAttribute("autosensDataTable", iobCobCalculatorPlugin.getAutosensDataTable().toString())
-                                        .putCustomAttribute("for_data", ">>>>> bucketed_data.size()=" + bucketed_data.size() + " i=" + i + "hourAgoData=" + hourAgoData.toString())
-                                        .putCustomAttribute("past", past)
-                                );
                                 log.debug(autosensDataTable.toString());
                                 log.debug(bucketed_data.toString());
                                 log.debug(IobCobCalculatorPlugin.getPlugin().getBgReadings().toString());
@@ -361,7 +354,8 @@ public class IobCobOref1Thread extends Thread {
                     //log.debug("TIME: " + new Date(bgTime).toString() + " BG: " + bg + " SENS: " + sens + " DELTA: " + delta + " AVGDELTA: " + avgDelta + " IOB: " + iob.iob + " ACTIVITY: " + iob.activity + " BGI: " + bgi + " DEVIATION: " + deviation);
 
                     // add an extra negative deviation if a high temptarget is running and exercise mode is set
-                    if (SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, SMBDefaults.high_temptarget_raises_sensitivity)) {
+                    // TODO AS-FIX
+                    if (false && SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, SMBDefaults.high_temptarget_raises_sensitivity)) {
                         TempTarget tempTarget = TreatmentsPlugin.getPlugin().getTempTargetFromHistory(bgTime);
                         if (tempTarget != null && tempTarget.target() >= 100) {
                             autosensData.extraDeviation.add(-(tempTarget.target() - 100) / 20);
@@ -394,7 +388,8 @@ public class IobCobOref1Thread extends Thread {
                 MainApp.bus().post(new EventAutosensCalculationFinished(cause));
             }).start();
         } finally {
-            mWakeLock.release();
+            if (mWakeLock != null)
+                mWakeLock.release();
             MainApp.bus().post(new EventIobCalculationProgress(""));
             if (L.isEnabled(L.AUTOSENS)) {
                 log.debug("AUTOSENSDATA thread ended: " + from);
