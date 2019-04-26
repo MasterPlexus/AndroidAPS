@@ -269,14 +269,13 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
         sage = (TextView) view.findViewById(R.id.careportal_sensorage);
         pbage = (TextView) view.findViewById(R.id.careportal_pbage);
 
-
-            iageView = (TextView) view.findViewById(R.id.overview_insulinage);
-            cageView = (TextView) view.findViewById(R.id.overview_canulaage);
-            reservoirView = (TextView) view.findViewById(R.id.overview_reservoirlevel);
-            sageView = (TextView) view.findViewById(R.id.overview_sensorage);
-            batteryView = (TextView) view.findViewById(R.id.overview_batterylevel);
-            bridgeView = (TextView) view.findViewById(R.id.overview_bridge);
-            statuslightsLayout = (LinearLayout) view.findViewById(R.id.overview_statuslights);
+        iageView = (TextView) view.findViewById(R.id.overview_insulinage);
+        cageView = (TextView) view.findViewById(R.id.overview_canulaage);
+        reservoirView = (TextView) view.findViewById(R.id.overview_reservoirlevel);
+        sageView = (TextView) view.findViewById(R.id.overview_sensorage);
+        batteryView = (TextView) view.findViewById(R.id.overview_batterylevel);
+        bridgeView = (TextView) view.findViewById(R.id.overview_bridge);
+        statuslightsLayout = (LinearLayout) view.findViewById(R.id.overview_statuslights);
 
         bgGraph = (GraphView) view.findViewById(R.id.overview_bggraph);
         iobGraph = (GraphView) view.findViewById(R.id.overview_iobgraph);
@@ -1644,7 +1643,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener, 
             } else if (check.apply(warnThreshold)) {
                 view.setTextColor(MainApp.gc(R.color.ribbonWarning));
             } else {
-                view.setTextColor(MainApp.gc(R.color.tempTargetConfirmation));
+                view.setTextColor(MainApp.gc(R.color.ribbonDefault));
             }
             view.setVisibility(View.VISIBLE);
         } else {
