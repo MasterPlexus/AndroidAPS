@@ -45,7 +45,7 @@
                     android:paddingStart="15dp"
                     android:text="@string/careportal_activity_label" />
 
-                <android.support.v7.widget.GridLayout
+                <androidx.gridlayout.widget.GridLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -99,7 +99,7 @@
                         app:layout_row="0" />
 
 
-                </android.support.v7.widget.GridLayout>
+                </androidx.gridlayout.widget.GridLayout>
 
 
                 <TextView
@@ -108,7 +108,7 @@
                     android:paddingStart="15dp"
                     android:text="@string/careportal_carbsandbolus_label" />
 
-                <android.support.v7.widget.GridLayout
+                <androidx.gridlayout.widget.GridLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -220,7 +220,7 @@
                         app:layout_gravity="fill"
                         app:layout_row="3" />
 
-                </android.support.v7.widget.GridLayout>
+                </androidx.gridlayout.widget.GridLayout>
 
 
                 <TextView
@@ -229,7 +229,7 @@
                     android:paddingStart="15dp"
                     android:text="@string/careportal_cgm_label" />
 
-                <android.support.v7.widget.GridLayout
+                <androidx.gridlayout.widget.GridLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -328,7 +328,7 @@
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="4" />
-                </android.support.v7.widget.GridLayout>
+                </androidx.gridlayout.widget.GridLayout>
 
 
                 <TextView
@@ -338,7 +338,7 @@
                     android:paddingStart="15dp"
                     android:text="@string/careportal_pump_label" />
 
-                <android.support.v7.widget.GridLayout
+                <androidx.gridlayout.widget.GridLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -406,7 +406,7 @@
                         app:layout_gravity="fill"
                         app:layout_row="6" />
 
-                </android.support.v7.widget.GridLayout>
+                </androidx.gridlayout.widget.GridLayout>
 
             </LinearLayout>
         </LinearLayout>
