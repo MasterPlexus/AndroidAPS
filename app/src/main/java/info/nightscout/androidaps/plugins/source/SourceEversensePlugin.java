@@ -52,7 +52,7 @@ public class SourceEversensePlugin extends PluginBase implements BgSourceInterfa
 
     @Override
     public boolean advancedFilteringSupported() {
-        return false;
+        return true;
     }
 
     @Override
