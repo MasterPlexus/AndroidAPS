@@ -1,19 +1,17 @@
 package info.nightscout.androidaps;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.SystemClock;
-import androidx.annotation.Nullable;
+
 import androidx.annotation.PluralsRes;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.squareup.otto.Bus;
-import com.squareup.otto.LoggingBus;
-import com.squareup.otto.ThreadEnforcer;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -38,7 +36,8 @@ import info.nightscout.androidaps.plugins.constraints.dstHelper.DstHelperPlugin;
 import info.nightscout.androidaps.plugins.constraints.objectives.ObjectivesPlugin;
 import info.nightscout.androidaps.plugins.constraints.safety.SafetyPlugin;
 import info.nightscout.androidaps.plugins.constraints.storage.StorageConstraintPlugin;
-import info.nightscout.androidaps.plugins.general.actions.ActionsFragment;
+import info.nightscout.androidaps.plugins.general.actions.ActionsPlugin;
+import info.nightscout.androidaps.plugins.general.automation.AutomationPlugin;
 import info.nightscout.androidaps.plugins.general.careportal.CareportalPlugin;
 import info.nightscout.androidaps.plugins.general.food.FoodPlugin;
 import info.nightscout.androidaps.plugins.general.maintenance.LoggerUtils;
@@ -49,8 +48,9 @@ import info.nightscout.androidaps.plugins.general.nsclient.receivers.AckAlarmRec
 import info.nightscout.androidaps.plugins.general.nsclient.receivers.DBAccessReceiver;
 import info.nightscout.androidaps.plugins.general.overview.OverviewPlugin;
 import info.nightscout.androidaps.plugins.general.persistentNotification.PersistentNotificationPlugin;
+import info.nightscout.androidaps.plugins.constraints.signatureVerifier.SignatureVerifierPlugin;
 import info.nightscout.androidaps.plugins.general.smsCommunicator.SmsCommunicatorPlugin;
-import info.nightscout.androidaps.plugins.general.versionChecker.VersionCheckerPlugin;
+import info.nightscout.androidaps.plugins.constraints.versionChecker.VersionCheckerPlugin;
 import info.nightscout.androidaps.plugins.general.wear.WearPlugin;
 import info.nightscout.androidaps.plugins.general.xdripStatusline.StatuslinePlugin;
 import info.nightscout.androidaps.plugins.insulin.InsulinOrefFreePeakPlugin;
@@ -67,6 +67,7 @@ import info.nightscout.androidaps.plugins.pump.danaRS.DanaRSPlugin;
 import info.nightscout.androidaps.plugins.pump.danaRv2.DanaRv2Plugin;
 import info.nightscout.androidaps.plugins.pump.insight.LocalInsightPlugin;
 import info.nightscout.androidaps.plugins.pump.mdi.MDIPlugin;
+import info.nightscout.androidaps.plugins.pump.medtronic.MedtronicPumpPlugin;
 import info.nightscout.androidaps.plugins.pump.virtual.VirtualPumpPlugin;
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityAAPSPlugin;
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityOref0Plugin;
@@ -84,18 +85,18 @@ import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.receivers.DataReceiver;
 import info.nightscout.androidaps.receivers.KeepAliveReceiver;
 import info.nightscout.androidaps.receivers.NSAlarmReceiver;
+import info.nightscout.androidaps.receivers.TimeDateOrTZChangeReceiver;
 import info.nightscout.androidaps.services.Intents;
 import info.nightscout.androidaps.utils.FabricPrivacy;
 import io.fabric.sdk.android.Fabric;
 
-import static info.nightscout.androidaps.plugins.general.versionChecker.VersionCheckerUtilsKt.triggerCheckVersion;
+import static info.nightscout.androidaps.plugins.constraints.versionChecker.VersionCheckerUtilsKt.triggerCheckVersion;
 
 
 public class MainApp extends Application {
     private static Logger log = LoggerFactory.getLogger(L.CORE);
     private static KeepAliveReceiver keepAliveReceiver;
 
-    private static Bus sBus;
     private static MainApp sInstance;
     public static Resources sResources;
 
@@ -111,6 +112,8 @@ public class MainApp extends Application {
     private static AckAlarmReceiver ackAlarmReciever = new AckAlarmReceiver();
     private static DBAccessReceiver dbAccessReciever = new DBAccessReceiver();
     private LocalBroadcastManager lbm;
+    BroadcastReceiver btReceiver;
+    TimeDateOrTZChangeReceiver timeDateOrTZChangeReceiver;
 
     public static boolean devBranch;
     public static boolean engineeringMode;
@@ -124,6 +127,8 @@ public class MainApp extends Application {
         sConstraintsChecker = new ConstraintChecker();
         sDatabaseHelper = OpenHelperManager.getHelper(sInstance, DatabaseHelper.class);
 
+        Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> log.error("Uncaught exception crashing app", ex));
+
         try {
             if (FabricPrivacy.fabricEnabled()) {
                 Fabric.with(this, new Crashlytics());
@@ -133,6 +138,7 @@ public class MainApp extends Application {
         }
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(!Boolean.getBoolean("disableFirebase"));
 
         JodaTimeAndroid.init(this);
 
@@ -146,19 +152,18 @@ public class MainApp extends Application {
         engineeringMode = engineeringModeSemaphore.exists() && engineeringModeSemaphore.isFile();
         devBranch = BuildConfig.VERSION.contains("-") || BuildConfig.VERSION.matches(".*[a-zA-Z]+.*");
 
-        sBus = L.isEnabled(L.EVENTS) && devBranch ? new LoggingBus(ThreadEnforcer.ANY) : new Bus(ThreadEnforcer.ANY);
-
         registerLocalBroadcastReceiver();
 
         //trigger here to see the new version on app start after an update
         triggerCheckVersion();
+        //setBTReceiver();
 
         if (pluginsList == null) {
             pluginsList = new ArrayList<>();
             // Register all tabs in app here
-            pluginsList.add(OverviewPlugin.getPlugin());
+            pluginsList.add(OverviewPlugin.INSTANCE);
             pluginsList.add(IobCobCalculatorPlugin.getPlugin());
-            if (Config.ACTION) pluginsList.add(ActionsFragment.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(ActionsPlugin.INSTANCE);
             pluginsList.add(InsulinOrefRapidActingPlugin.getPlugin());
             pluginsList.add(InsulinOrefUltraRapidActingPlugin.getPlugin());
             pluginsList.add(InsulinOrefFreePeakPlugin.getPlugin());
@@ -171,22 +176,24 @@ public class MainApp extends Application {
             if (Config.PUMPDRIVERS) pluginsList.add(DanaRv2Plugin.getPlugin());
             if (Config.PUMPDRIVERS) pluginsList.add(DanaRSPlugin.getPlugin());
             if (Config.PUMPDRIVERS) pluginsList.add(LocalInsightPlugin.getPlugin());
-            pluginsList.add(CareportalPlugin.getPlugin());
             if (Config.PUMPDRIVERS) pluginsList.add(ComboPlugin.getPlugin());
-            if (Config.MDI) pluginsList.add(MDIPlugin.getPlugin());
+            if (Config.PUMPDRIVERS) pluginsList.add(MedtronicPumpPlugin.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(MDIPlugin.getPlugin());
             pluginsList.add(VirtualPumpPlugin.getPlugin());
+            pluginsList.add(CareportalPlugin.getPlugin());
             if (Config.APS) pluginsList.add(LoopPlugin.getPlugin());
             if (Config.APS) pluginsList.add(OpenAPSMAPlugin.getPlugin());
             if (Config.APS) pluginsList.add(OpenAPSAMAPlugin.getPlugin());
             if (Config.APS) pluginsList.add(OpenAPSSMBPlugin.getPlugin());
             pluginsList.add(NSProfilePlugin.getPlugin());
-            if (Config.OTHERPROFILES) pluginsList.add(SimpleProfilePlugin.getPlugin());
-            if (Config.OTHERPROFILES) pluginsList.add(LocalProfilePlugin.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(SimpleProfilePlugin.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(LocalProfilePlugin.getPlugin());
             pluginsList.add(TreatmentsPlugin.getPlugin());
-            if (Config.SAFETY) pluginsList.add(SafetyPlugin.getPlugin());
-            if (Config.SAFETY) pluginsList.add(VersionCheckerPlugin.INSTANCE);
-            if (Config.SAFETY) pluginsList.add(StorageConstraintPlugin.getPlugin());
-            if (Config.APS) pluginsList.add(ObjectivesPlugin.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(SafetyPlugin.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(VersionCheckerPlugin.INSTANCE);
+            if (!Config.NSCLIENT) pluginsList.add(StorageConstraintPlugin.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(SignatureVerifierPlugin.getPlugin());
+            if (!Config.APS) pluginsList.add(ObjectivesPlugin.INSTANCE);
             pluginsList.add(SourceXdripPlugin.getPlugin());
             pluginsList.add(SourceNSClientPlugin.getPlugin());
             pluginsList.add(SourceMM640gPlugin.getPlugin());
@@ -195,14 +202,16 @@ public class MainApp extends Application {
             pluginsList.add(SourcePoctechPlugin.getPlugin());
             pluginsList.add(SourceTomatoPlugin.getPlugin());
             pluginsList.add(SourceEversensePlugin.getPlugin());
-            if (Config.SMSCOMMUNICATORENABLED) pluginsList.add(SmsCommunicatorPlugin.getPlugin());
+            if (!Config.NSCLIENT) pluginsList.add(SmsCommunicatorPlugin.getPlugin());
             pluginsList.add(FoodPlugin.getPlugin());
 
             pluginsList.add(WearPlugin.initPlugin(this));
             pluginsList.add(StatuslinePlugin.initPlugin(this));
             pluginsList.add(PersistentNotificationPlugin.getPlugin());
             pluginsList.add(NSClientPlugin.getPlugin());
+//            if (engineeringMode) pluginsList.add(TidepoolPlugin.INSTANCE);
             pluginsList.add(MaintenancePlugin.initPlugin(this));
+            pluginsList.add(AutomationPlugin.INSTANCE);
 
             pluginsList.add(ConfigBuilderPlugin.getPlugin());
 
@@ -250,6 +259,10 @@ public class MainApp extends Application {
 
         //register dbaccess
         lbm.registerReceiver(dbAccessReciever, new IntentFilter(Intents.ACTION_DATABASE));
+
+        this.timeDateOrTZChangeReceiver = new TimeDateOrTZChangeReceiver();
+        this.timeDateOrTZChangeReceiver.registerBroadcasts(this);
+
     }
 
     private void startKeepAliveService() {
@@ -262,26 +275,6 @@ public class MainApp extends Application {
     public void stopKeepAliveService() {
         if (keepAliveReceiver != null)
             KeepAliveReceiver.cancelAlarm(this);
-    }
-
-    public static void subscribe(Object subscriber) {
-        try {
-            bus().register(subscriber);
-        } catch (IllegalArgumentException e) {
-            // already registered
-        }
-    }
-
-    public static void unsubscribe(Object subscriber) {
-        try {
-            bus().unregister(subscriber);
-        } catch (IllegalArgumentException e) {
-            // already unregistered
-        }
-    }
-
-    public static Bus bus() {
-        return sBus;
     }
 
     public static String gs(int id) {
@@ -385,19 +378,6 @@ public class MainApp extends Application {
         return newList;
     }
 
-    @Nullable
-    public static <T extends PluginBase> T getSpecificPlugin(Class<T> pluginClass) {
-        if (pluginsList != null) {
-            for (PluginBase p : pluginsList) {
-                if (pluginClass.isAssignableFrom(p.getClass()))
-                    return (T) p;
-            }
-        } else {
-            log.error("pluginsList=null");
-        }
-        return null;
-    }
-
     public static boolean isEngineeringModeOrRelease() {
         if (!Config.APS)
             return true;
@@ -435,5 +415,19 @@ public class MainApp extends Application {
             sDatabaseHelper.close();
             sDatabaseHelper = null;
         }
+
+        if (btReceiver != null) {
+            unregisterReceiver(btReceiver);
+        }
+
+        if (timeDateOrTZChangeReceiver != null) {
+            unregisterReceiver(timeDateOrTZChangeReceiver);
+        }
+
+    }
+
+    public static int dpToPx(int dp) {
+        float scale = sResources.getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 }
