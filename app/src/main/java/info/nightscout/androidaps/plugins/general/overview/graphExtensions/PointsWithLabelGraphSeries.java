@@ -40,6 +40,7 @@ import com.jjoe64.graphview.series.BaseSeries;
 import java.util.Iterator;
 
 import info.nightscout.androidaps.MainApp;
+import info.nightscout.androidaps.utils.SP;
 
 // Added by Rumen for scalable text
 
@@ -56,7 +57,7 @@ public class PointsWithLabelGraphSeries<E extends DataPointWithLabelInterface> e
     // Convert the sp to pixels
     Context context = MainApp.instance().getApplicationContext();
     float scaledTextSize = spSize * context.getResources().getDisplayMetrics().scaledDensity;
-    float scaledPxSize = context.getResources().getDisplayMetrics().scaledDensity * 3f;
+    float scaledPxSize = context.getResources().getDisplayMetrics().scaledDensity * (SP.getBoolean("key_dot_size", true) ? 2f : 3f);
 
     /**
      * choose a predefined shape to render for
