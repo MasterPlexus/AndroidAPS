@@ -11,7 +11,9 @@ import info.nightscout.androidaps.db.CareportalEvent;
 import info.nightscout.androidaps.interfaces.PumpInterface;
 import info.nightscout.androidaps.plugins.configBuilder.ConfigBuilderPlugin;
 import info.nightscout.androidaps.plugins.general.careportal.CareportalFragment;
+import info.nightscout.androidaps.plugins.general.careportal.CareportalPlugin;
 import info.nightscout.androidaps.plugins.general.nsclient.data.NSSettingsStatus;
+import info.nightscout.androidaps.plugins.pump.common.defs.PumpType;
 import info.nightscout.androidaps.utils.DecimalFormatter;
 import info.nightscout.androidaps.utils.SP;
 import info.nightscout.androidaps.utils.SetWarnColor;
@@ -105,9 +107,14 @@ class StatuslightHandler {
         handleAge("sage", CareportalEvent.SENSORCHANGE, sageView, "SEN ",
                 164, 166);
 
-        handleLevel(R.string.key_statuslights_bat_critical, 26.0,
-                R.string.key_statuslights_bat_warning, 51.0,
-                batteryView, "BAT ", pump.getBatteryLevel());
+        if (pump.model().getDescription().equals(PumpType.AccuChekCombo)) {
+            handleAge( "bat", CareportalEvent.PUMPBATTERYCHANGE, batteryView, "BAT ",
+                     30, 26);
+        } else {
+            handleLevel(R.string.key_statuslights_bat_critical, 26.0,
+                    R.string.key_statuslights_bat_warning, 51.0,
+                    batteryView, "BAT ", pump.getBatteryLevel());
+        }
     }
 
     void handleAge(String nsSettingPlugin, String eventName, TextView view, String text,
