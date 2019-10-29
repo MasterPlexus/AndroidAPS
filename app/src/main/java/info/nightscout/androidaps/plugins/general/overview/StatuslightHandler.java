@@ -107,7 +107,7 @@ class StatuslightHandler {
         handleAge("sage", CareportalEvent.SENSORCHANGE, sageView, "SEN ",
                 164, 166);
 
-        if (pump.model().getDescription().equals(PumpType.AccuChekCombo)) {
+        if (pump.getPumpDescription().pumpType.getModel().equals("Combo")) {
             handleAge( "bat", CareportalEvent.PUMPBATTERYCHANGE, batteryView, "BAT ",
                      30, 26);
         } else {
