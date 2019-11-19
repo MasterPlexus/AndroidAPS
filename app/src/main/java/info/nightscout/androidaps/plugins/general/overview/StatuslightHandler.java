@@ -109,7 +109,7 @@ class StatuslightHandler {
 
         if (pump.getPumpDescription().pumpType.getModel().equals("Combo")) {
             handleAge( "bat", CareportalEvent.PUMPBATTERYCHANGE, batteryView, "BAT ",
-                     30, 26);
+                     720, 624);
         } else {
             handleLevel(R.string.key_statuslights_bat_critical, 26.0,
                     R.string.key_statuslights_bat_warning, 51.0,
