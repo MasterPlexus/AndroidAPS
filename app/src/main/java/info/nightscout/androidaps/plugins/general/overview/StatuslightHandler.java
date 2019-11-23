@@ -95,17 +95,17 @@ class StatuslightHandler {
         PumpInterface pump = ConfigBuilderPlugin.getPlugin().getActivePump();
 
         handleAge("cage", CareportalEvent.SITECHANGE, cageView, "CAN ",
-                48, 72);
+                72, 48);
 
         handleAge("iage", CareportalEvent.INSULINCHANGE, iageView, "INS ",
-                72, 96);
+                156, 120);
 
         handleLevel(R.string.key_statuslights_res_critical, 10.0,
                 R.string.key_statuslights_res_warning, 80.0,
                 reservoirView, "RES ", pump.getReservoirLevel());
 
         handleAge("sage", CareportalEvent.SENSORCHANGE, sageView, "SEN ",
-                164, 166);
+                166, 164);
 
         if (pump.getPumpDescription().pumpType.getModel().equals("Combo")) {
             handleAge( "bat", CareportalEvent.PUMPBATTERYCHANGE, batteryView, "BAT ",
