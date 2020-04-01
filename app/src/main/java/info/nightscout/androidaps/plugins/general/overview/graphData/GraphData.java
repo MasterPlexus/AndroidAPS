@@ -301,7 +301,7 @@ public class GraphData {
             Treatment t = treatments.get(tx);
             if (t.getX() < fromTime || t.getX() > endTime) continue;
             if (t.isSMB && !t.isValid) continue;
-            t.setY(getNearestBg((long) t.getX()) + (t.insulin *10));
+            t.setY(getNearestBg((long) t.getX()) + 10);
             filteredTreatments.add(t);
         }
 
@@ -311,6 +311,7 @@ public class GraphData {
         for (int tx = 0; tx < profileSwitches.size(); tx++) {
             DataPointWithLabelInterface t = profileSwitches.get(tx);
             if (t.getX() < fromTime || t.getX() > endTime) continue;
+            if (t.getShape() == PointsWithLabelGraphSeries.Shape.SMB) t.setY(getNearestBg((long) t.getX()) - 10);
             filteredTreatments.add(t);
         }
 
