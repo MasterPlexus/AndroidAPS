@@ -254,13 +254,7 @@ public class PointsWithLabelGraphSeries<E extends DataPointWithLabelInterface> e
                     drawArrows(points, canvas, mPaint);
                     // write also text of SMB - DW
                     if (value.getLabel() != null) {
-                        Rect bounds = new Rect((int) endX, (int) endY + 3, (int) (xpluslength), (int) endY + 8);
-                        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-                        canvas.drawRect(bounds, mPaint);
-                        mPaint.setTextSize((float) (scaledTextSize));
-                        mPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-                        mPaint.setFakeBoldText(true);
-                        canvas.drawText(value.getLabel(), endX, endY, mPaint);
+                        drawLabel45(endX, endY, value, canvas);
                     }
                 } else if (value.getShape() == Shape.EXTENDEDBOLUS) {
                     mPaint.setStrokeWidth(0);
