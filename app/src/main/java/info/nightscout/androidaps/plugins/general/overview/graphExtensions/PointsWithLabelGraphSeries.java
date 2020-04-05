@@ -245,6 +245,18 @@ public class PointsWithLabelGraphSeries<E extends DataPointWithLabelInterface> e
                 } else if (value.getShape() == Shape.SMB) {
                     mPaint.setStrokeWidth(2);
                     mPaint.setColor(MainApp.gc(R.color.basal));
+                    if (value.getLabel() != null) {
+                        try
+                        {
+                            float f = Float.parseFloat(value.getLabel().replace("U",""));
+                            endY = endY + (f * 100);
+                        }
+                        catch (NumberFormatException nfe)
+                        {
+                            nfe.printStackTrace();
+                        }
+
+                    }
                     Point[] points = new Point[3];
                     float size = value.getSize() * scaledPxSize;
                     points[0] = new Point((int) endX, (int) (endY - size));
@@ -252,10 +264,7 @@ public class PointsWithLabelGraphSeries<E extends DataPointWithLabelInterface> e
                     points[2] = new Point((int) (endX - size), (int) (endY + size * 0.67));
                     mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
                     drawArrows(points, canvas, mPaint);
-                    // write also text of SMB - DW
-                    if (value.getLabel() != null) {
-                        drawLabel45(endX, endY, value, canvas);
-                    }
+
                 } else if (value.getShape() == Shape.EXTENDEDBOLUS) {
                     mPaint.setStrokeWidth(0);
                     if (value.getLabel() != null) {
