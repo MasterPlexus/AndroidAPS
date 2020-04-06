@@ -246,13 +246,13 @@ public class PointsWithLabelGraphSeries<E extends DataPointWithLabelInterface> e
                     mPaint.setStrokeWidth(2);
                     mPaint.setColor(MainApp.gc(R.color.basal));
                     if (value.getLabel() != null) {
-                        endY = endY + ((float) value.getInsulin() * 100);
+                        endY = endY - ((float) value.getInsulin() * 100);
                     }
                     Point[] points = new Point[3];
                     float size = value.getSize() * scaledPxSize;
                     points[0] = new Point((int) endX, (int) (endY - size));
-                    points[1] = new Point((int) (endX + size), (int) (endY + size * 0.67));
-                    points[2] = new Point((int) (endX - size), (int) (endY + size * 0.67));
+                    points[1] = new Point((int) (endX + size * 0.67), (int) (endY + size * 0.67));
+                    points[2] = new Point((int) (endX - size * 0.67), (int) (endY + size * 0.67));
                     mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
                     drawArrows(points, canvas, mPaint);
 
