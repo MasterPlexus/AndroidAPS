@@ -51,6 +51,8 @@ public interface DataPointWithLabelInterface extends DataPointInterface{
      */
     String getLabel();
 
+    double getInsulin();
+
     long getDuration();
     PointsWithLabelGraphSeries.Shape getShape();
     float getSize();

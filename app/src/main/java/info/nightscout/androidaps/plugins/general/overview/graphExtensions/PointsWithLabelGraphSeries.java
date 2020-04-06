@@ -246,16 +246,7 @@ public class PointsWithLabelGraphSeries<E extends DataPointWithLabelInterface> e
                     mPaint.setStrokeWidth(2);
                     mPaint.setColor(MainApp.gc(R.color.basal));
                     if (value.getLabel() != null) {
-                        try
-                        {
-                            float f = Float.parseFloat(value.getLabel().replace("U",""));
-                            endY = endY + (f * 100);
-                        }
-                        catch (NumberFormatException nfe)
-                        {
-                            nfe.printStackTrace();
-                        }
-
+                        endY = endY + ((float) value.getInsulin() * 100);
                     }
                     Point[] points = new Point[3];
                     float size = value.getSize() * scaledPxSize;

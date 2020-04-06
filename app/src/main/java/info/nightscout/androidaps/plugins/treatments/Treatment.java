@@ -235,6 +235,11 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
     }
 
     @Override
+    public double getInsulin() {
+        return insulin;
+    }
+
+    @Override
     public long getDuration() {
         return 0;
     }
