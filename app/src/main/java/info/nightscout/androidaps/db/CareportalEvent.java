@@ -358,4 +358,9 @@ CareportalEvent implements DataPointWithLabelInterface, Interval {
         return eventType.equals(OPENAPSOFFLINE);
     }
 
+    @Override
+    public double getInsulin() {
+        return 0;
+    }
+
 }

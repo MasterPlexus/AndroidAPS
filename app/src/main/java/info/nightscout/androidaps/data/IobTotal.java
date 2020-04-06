@@ -169,6 +169,11 @@ public class IobTotal implements DataPointWithLabelInterface {
     }
 
     @Override
+    public double getInsulin() { // by DW
+        return iob;
+    }
+
+    @Override
     public long getDuration() {
         return 0;
     }

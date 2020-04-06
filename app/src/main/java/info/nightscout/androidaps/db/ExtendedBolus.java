@@ -195,6 +195,11 @@ public class ExtendedBolus implements Interval, DataPointWithLabelInterface {
         return true;
     }
 
+    @Override
+    public double getInsulin() {
+        return insulin;
+    }
+
     // -------- Interval interface end ---------
 
     public String log() {

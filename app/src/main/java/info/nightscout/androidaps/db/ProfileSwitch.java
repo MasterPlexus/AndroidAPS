@@ -275,6 +275,11 @@ public class ProfileSwitch implements Interval, DataPointWithLabelInterface {
     }
 
     @Override
+    public double getInsulin() {
+        return 0;
+    }
+
+    @Override
     public long getDuration() {
         return 0;
     }
